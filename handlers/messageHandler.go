@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"flag"
 	"fmt"
 	"log"
 	"os"
@@ -11,12 +10,13 @@ import (
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/dylanbatar/github.com/todo"
+	"github.com/joho/godotenv"
 )
 
 var (
-	GuildID  = flag.String("guild", "", "Test guild ID")
-	BotToken = flag.String("token", "", "Bot access token")
-	AppID    = flag.String("app", "", "Application ID")
+	GuildID  string
+	BotToken string
+	AppID    string
 )
 
 var s *discordgo.Session
@@ -28,11 +28,15 @@ var (
 )
 
 func init() {
+	godotenv.Load()
+
 	var err error
 
-	flag.Parse()
+	GuildID = os.Getenv("GUILD_ID")
+	BotToken = os.Getenv("BOT_TOKEN")
+	AppID = os.Getenv("APPLICATION_ID")
 
-	s, err = discordgo.New("Bot " + *BotToken)
+	s, err = discordgo.New("Bot " + BotToken)
 
 	if err != nil {
 		log.Fatalf("Invalid bot parameters: %v", err)
@@ -61,7 +65,7 @@ func init() {
 	<-stop
 
 	for _, v := range registeredCommand {
-		err := s.ApplicationCommandDelete(s.State.User.ID, *GuildID, v)
+		err := s.ApplicationCommandDelete(s.State.User.ID, GuildID, v)
 		if err != nil {
 			log.Panicf("Cannot delete '%v' command: %v", v, err)
 		}
@@ -98,7 +102,7 @@ func registerCommands() {
 
 // REGISTER COMMAND
 func registerNewCommand() {
-	cmdId, err := s.ApplicationCommandCreate(*AppID, *GuildID, &discordgo.ApplicationCommand{
+	cmdId, err := s.ApplicationCommandCreate(AppID, GuildID, &discordgo.ApplicationCommand{
 		Name:        "new",
 		Description: "Crear nuevo todo",
 	})
@@ -112,7 +116,7 @@ func registerNewCommand() {
 }
 
 func registerCompleteTodoCommand() {
-	cmId, err := s.ApplicationCommandCreate(*AppID, *GuildID, &discordgo.ApplicationCommand{
+	cmId, err := s.ApplicationCommandCreate(AppID, GuildID, &discordgo.ApplicationCommand{
 		Name:        "complete-todo",
 		Description: "marcar un todo",
 		Options: []*discordgo.ApplicationCommandOption{
@@ -135,7 +139,7 @@ func registerCompleteTodoCommand() {
 }
 
 func registerGetTodosCommand() {
-	cmId, err := s.ApplicationCommandCreate(*AppID, *GuildID, &discordgo.ApplicationCommand{
+	cmId, err := s.ApplicationCommandCreate(AppID, GuildID, &discordgo.ApplicationCommand{
 		Name:        "get_todos",
 		Description: "Mostrar la informacion de todos los todo",
 	})
@@ -147,7 +151,7 @@ func registerGetTodosCommand() {
 }
 
 func registerGetTodoCommand() {
-	cmId, err := s.ApplicationCommandCreate(*AppID, *GuildID, &discordgo.ApplicationCommand{
+	cmId, err := s.ApplicationCommandCreate(AppID, GuildID, &discordgo.ApplicationCommand{
 		Name:        "get_todo",
 		Description: "Mostrar la informacion de un todo",
 		Options: []*discordgo.ApplicationCommandOption{
