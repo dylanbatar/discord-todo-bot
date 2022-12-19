@@ -35,6 +35,7 @@ func init() {
 	DbConn, err = sql.Open("mysql", URI_CONN)
 
 	if err != nil {
-		fmt.Println("Database connection fail")
+		fmt.Println("Database connection fail", err)
+
 	}
 }
