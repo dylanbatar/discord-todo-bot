@@ -15,6 +15,7 @@ var (
 	HOST_DATABASE     string
 	USER_DATABASE     string
 	PASSWORD_DATABASE string
+	DATABASE          string
 	PORT_DATABASE     int
 )
 
@@ -27,7 +28,7 @@ func init() {
 	USER_DATABASE = os.Getenv("USER_DATABASE")
 	PASSWORD_DATABASE = os.Getenv("PASSWORD_DATABASE")
 	PORT_DATABASE, _ = strconv.Atoi(os.Getenv("PORT_DATABASE"))
-	DATABASE := "app"
+	DATABASE = os.Getenv("DATABASE")
 
 	URI_CONN := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s", USER_DATABASE, PASSWORD_DATABASE, HOST_DATABASE, PORT_DATABASE, DATABASE)
 
